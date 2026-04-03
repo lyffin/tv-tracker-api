@@ -1,0 +1,266 @@
+openapi: 3.0.3
+
+info:
+  title: TV Tracker API
+  description: API for tracking movies, TV shows, and anime from multiple providers
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+tags:
+  - name: Media
+    description: Search and retrieve media
+  - name: Users
+    description: User management
+  - name: Lists
+    description: User lists and tracking
+
+paths:
+
+  /media/search:
+    get:
+      tags:
+        - Media
+      summary: Search media across providers
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [movie, tv, anime]
+      responses:
+        '200':
+          description: Successful search
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaList'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /media/{id}:
+    get:
+      tags:
+        - Media
+      summary: Get media details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "tmdb:123"
+      responses:
+        '200':
+          description: Media details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaDetails'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+
+  schemas:
+
+    Media:
+      type: object
+      required:
+        - id
+        - title
+        - type
+        - source
+      properties:
+        id:
+          type: string
+          example: "anilist:15125"
+        title:
+          type: string
+        imageUrl:
+          type: string
+        type:
+          type: string
+          enum: [movie, tv, anime]
+        source:
+          type: string
+          enum: [tmdb, anilist]
+        releaseYear:
+          type: integer
+          format: int32
+        score:
+          type: number
+          format: float
+
+    MediaList:
+      type: object
+      required:
+        - results
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Media'
+
+    MediaDetails:
+      type: object
+      required:
+        - id
+        - title
+        - type
+        - source
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        imageUrl:
+          type: string
+        type:
+          type: string
+          enum: [movie, tv, anime]
+        source:
+          type: string
+          enum: [tmdb, anilist]
+        releaseYear:
+          type: integer
+          format: int32
+        endYear:
+          type: integer
+          format: int32
+        score:
+          type: number
+          format: float
+        description:
+          type: string
+        duration:
+          type: integer
+          example: 120
+          description: Duration in minutes (movie runtime or average episode duration for series)
+        seasons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Season'
+        totalEpisodes:
+          type: integer
+        relatedMedia:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedMedia'
+
+    Season:
+      type: object
+      required:
+        - episodes
+        - totalEpisodes
+        - releaseYear
+        - title
+      properties:
+        episodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Episode'
+        totalEpisodes:
+          type: integer
+        imageUrl:
+          type: string
+        releaseYear:
+          type: integer
+          format: int32
+        title:
+          type: string
+        description:
+          type: string
+        score:
+          type: number
+          format: float
+
+    Episode:
+      type: object
+      required:
+        - number
+        - title
+        - releaseDate
+        - duration
+      properties:
+        number:
+          type: integer
+        title:
+          type: string
+        imageUrl:
+          type: string
+        score:
+          type: number
+          format: float
+        description:
+          type: string
+        releaseDate:
+          type: string
+          format: date
+        duration:
+          type: integer
+
+    RelatedMedia:
+      type: object
+      required:
+        - relatedType
+        - media
+      properties:
+        relatedType:
+          type: string
+          enum: [sequel, prequel, alternative]
+        media:
+          $ref: '#/components/schemas/Media'
+
+    ErrorResponse:
+      type: object
+      required:
+        - message
+        - status
+      properties:
+        message:
+          type: string
+        status:
+          type: integer
