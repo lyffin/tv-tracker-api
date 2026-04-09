@@ -118,7 +118,7 @@ components:
           type: string
           example: "anilist:15125"
         title:
-          type: string
+          $ref: '#/components/schemas/Title'
         imageUrl:
           type: string
         type:
@@ -133,6 +133,9 @@ components:
         score:
           type: number
           format: float
+        mediaFormat:
+          type: string
+          enum: [TV, TV_SHORT, MOVIE, SPECIAL, OVA, ONA, MUSIC, MANGA, NOVEL, ONE_SHOT, UNKNOWN]
 
     MediaList:
       type: object
@@ -155,7 +158,7 @@ components:
         id:
           type: string
         title:
-          type: string
+          $ref: '#/components/schemas/Title'
         imageUrl:
           type: string
         type:
@@ -189,6 +192,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RelatedMedia'
+        mediaFormat:
+          type: string
+          enum: [TV, TV_SHORT, MOVIE, SPECIAL, OVA, ONA, MUSIC, MANGA, NOVEL, ONE_SHOT, UNKNOWN]
 
     Season:
       type: object
@@ -253,6 +259,16 @@ components:
           enum: [sequel, prequel, alternative]
         media:
           $ref: '#/components/schemas/Media'
+
+    Title:
+      type: object
+      required:
+        - english
+      properties:
+        english:
+          type: string
+        original:
+          type: string
 
     ErrorResponse:
       type: object
