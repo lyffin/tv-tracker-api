@@ -1,5 +1,6 @@
 package com.lbranco.tv_tracker_api.media.controller;
 
+import com.lbranco.tv_tracker_api.media.service.MediaSearchService;
 import com.lbranco.tv_tracker_api.model.Media;
 import com.lbranco.tv_tracker_api.provider.anilist.AniListService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,14 +14,14 @@ import java.util.List;
 @RequestMapping("/media")
 public class MediaController {
 
-    private final AniListService aniListService;
+    private final MediaSearchService mediaSearchService;
 
-    public MediaController(AniListService aniListService) {
-        this.aniListService = aniListService;
+    public MediaController(MediaSearchService mediaSearchService) {
+        this.mediaSearchService = mediaSearchService;
     }
 
     @GetMapping("/search")
     public List<Media> search(@RequestParam String query) {
-        return aniListService.searchAnime(query);
+        return mediaSearchService.search(query);
     }
 }

@@ -23,7 +23,7 @@ public class Media {
     }
 
     public enum Source {
-        IMDB, ANILIST
+        TMDB, ANILIST
     }
 
     public enum MediaFormat {
