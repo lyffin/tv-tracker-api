@@ -21,7 +21,10 @@ public class MediaController {
     }
 
     @GetMapping("/search")
-    public List<Media> search(@RequestParam String query) {
-        return mediaSearchService.search(query);
+    public List<Media> search(
+            @RequestParam String query,
+            @RequestParam(required = false) Media.Type type
+    ) {
+        return mediaSearchService.search(query, type);
     }
 }

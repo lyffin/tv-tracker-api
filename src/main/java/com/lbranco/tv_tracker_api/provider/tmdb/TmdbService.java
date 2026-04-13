@@ -16,9 +16,21 @@ public class TmdbService {
         this.tmdbMapper = tmdbMapper;
     }
 
-    public List<Media> search(String query) {
+    public List<Media> searchMulti(String query) {
         return tmdbMapper.mapToMedia(
                 tmdbClient.searchMulti(query)
+        );
+    }
+
+    public List<Media> searchMovie(String query) {
+        return tmdbMapper.mapToMedia(
+                tmdbClient.searchMovie(query)
+        );
+    }
+
+    public List<Media> searchTv(String query) {
+        return tmdbMapper.mapToMedia(
+                tmdbClient.searchTv(query)
         );
     }
 }

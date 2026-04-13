@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TmdbSearchMultiResponse {
+public class TmdbSearchResponse {
 
     private Integer page;
     private List<TmdbResult> results;

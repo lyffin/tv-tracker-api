@@ -7,10 +7,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class MediaSearchService {
 
+    private static final Logger log = LoggerFactory.getLogger(MediaSearchService.class);
     private final AniListService aniListService;
     private final TmdbService tmdbService;
 
@@ -20,22 +24,30 @@ public class MediaSearchService {
         this.tmdbService = tmdbService;
     }
 
-    public List<Media> search(String query) {
+    public List<Media> search(String query, Media.Type type) {
 
-        List<Media> results = new ArrayList<>();
+        if (type == null) {
+            List<Media> results = new ArrayList<>();
 
-        try {
-            results.addAll(aniListService.searchAnime(query));
-        } catch (Exception e) {
-            System.out.println("AniList failed: " + e.getMessage());
+            results.addAll(safeCall("AniList", query, () -> aniListService.searchAnime(query)));
+            results.addAll(safeCall("TMDB", query, () -> tmdbService.searchMulti(query)));
+
+            return results;
         }
 
-        try {
-            results.addAll(tmdbService.search(query));
-        } catch (Exception e) {
-            System.out.println("TMDB failed: " + e.getMessage());
-        }
+        return switch (type) {
+            case ANIME -> safeCall("AniList", query, () -> aniListService.searchAnime(query));
+            case MOVIE -> safeCall("TMDB-MOVIE", query, () -> tmdbService.searchMovie(query));
+            case TV -> safeCall("TMDB-TV", query, () -> tmdbService.searchTv(query));
+        };
+    }
 
-        return results;
+    private List<Media> safeCall(String source, String query, Supplier<List<Media>> supplier) {
+        try {
+            return supplier.get();
+        } catch (Exception e) {
+            log.error("{} search failed for query={}", source, query, e);
+            return List.of();
+        }
     }
 }
