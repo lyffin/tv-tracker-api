@@ -23,7 +23,7 @@ public class TmdbSearchResponse {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class TmdbResult {
 
-        private Integer id;
+        private int id;
         private String title;
         private String name;
 
