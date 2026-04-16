@@ -24,12 +24,14 @@ public class MediaDetails {
     private List<Season> seasons;
     private Integer totalEpisodes;
     private MediaFormat mediaFormat;
+    private String status;
 
     @Getter
     @Setter
     @NoArgsConstructor
     public static class Season {
 
+        private int id;
         private Integer totalEpisodes;
         private String imageUrl;
         private Integer releaseYear;

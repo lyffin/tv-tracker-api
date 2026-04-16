@@ -1,12 +1,11 @@
 package com.lbranco.tv_tracker_api.media.controller;
 
+import com.lbranco.tv_tracker_api.media.service.MediaDetailsService;
 import com.lbranco.tv_tracker_api.media.service.MediaSearchService;
 import com.lbranco.tv_tracker_api.model.Media;
+import com.lbranco.tv_tracker_api.model.MediaDetails;
 import com.lbranco.tv_tracker_api.provider.anilist.AniListService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -15,9 +14,13 @@ import java.util.List;
 public class MediaController {
 
     private final MediaSearchService mediaSearchService;
+    private final MediaDetailsService mediaDetailsService;
 
-    public MediaController(MediaSearchService mediaSearchService) {
+    public MediaController(MediaSearchService mediaSearchService,
+                           MediaDetailsService mediaDetailsService) {
+
         this.mediaSearchService = mediaSearchService;
+        this.mediaDetailsService = mediaDetailsService;
     }
 
     @GetMapping("/search")
@@ -26,5 +29,13 @@ public class MediaController {
             @RequestParam(required = false) Media.Type type
     ) {
         return mediaSearchService.search(query, type);
+    }
+
+    @GetMapping("/{provider}/{id}")
+    public MediaDetails details(
+            @PathVariable String provider,
+            @PathVariable int id
+    ) {
+        return mediaDetailsService.details(provider, id);
     }
 }

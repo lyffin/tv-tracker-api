@@ -1,8 +1,11 @@
 package com.lbranco.tv_tracker_api.provider.tmdb.mapper;
 
 import com.lbranco.tv_tracker_api.model.Media;
+import com.lbranco.tv_tracker_api.model.MediaDetails;
 import com.lbranco.tv_tracker_api.model.Title;
+import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbMovieDetailsResponse;
 import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbSearchResponse;
+import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbTvSeriesDetailsResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -41,7 +44,7 @@ public class TmdbMapper {
         );
         media.setType(mapType(tmdbResult.getMediaType()));
         media.setSource(Media.Source.TMDB);
-        media.setReleaseYear(extractYear(tmdbResult));
+        media.setReleaseYear(extractYear(tmdbResult.getReleaseDate() != null ? tmdbResult.getReleaseDate() : tmdbResult.getFirstAirDate()));
         media.setScore(
                 tmdbResult.getVoteAverage() != null
                         ? tmdbResult.getVoteAverage() * 10
@@ -49,6 +52,94 @@ public class TmdbMapper {
         );
 
         return media;
+    }
+
+    public MediaDetails mapMovieDetailsToMediaDetails(TmdbMovieDetailsResponse response) {
+
+        MediaDetails mediaDetails = new MediaDetails();
+
+        mediaDetails.setId("tmdb:" + response.getId());
+
+        Title title = new Title();
+        title.setEnglish(response.getTitle() != null ? response.getTitle() : response.getOriginalTitle());
+        title.setOriginal(response.getOriginalTitle() != null
+                ? response.getOriginalTitle()
+                : response.getTitle());
+        mediaDetails.setTitle(title);
+
+        mediaDetails.setImageUrl(
+                response.getPosterPath() != null
+                        ? IMAGE_BASE + response.getPosterPath()
+                        : null
+        );
+        mediaDetails.setDescription(response.getOverview());
+        mediaDetails.setReleaseYear(extractYear(response.getReleaseDate()));
+        mediaDetails.setDuration(response.getRuntime());
+        mediaDetails.setStatus(response.getStatus());
+        mediaDetails.setScore(response.getVoteAverage());
+        mediaDetails.setType(MediaDetails.Type.MOVIE);
+        mediaDetails.setSource(MediaDetails.Source.TMDB);
+
+        return mediaDetails;
+    }
+
+    public MediaDetails mapTvSeriesToMediaDetails(TmdbTvSeriesDetailsResponse response) {
+
+        MediaDetails mediaDetails = new MediaDetails();
+
+        mediaDetails.setId("tmdb:" + response.getId());
+
+        Title title = new Title();
+        title.setEnglish(response.getName() != null ? response.getName() : response.getOriginalName());
+        title.setOriginal(response.getOriginalName() != null
+                ? response.getOriginalName()
+                : response.getName());
+        mediaDetails.setTitle(title);
+
+        mediaDetails.setImageUrl(
+                response.getPosterPath() != null
+                        ? IMAGE_BASE + response.getPosterPath()
+                        : null
+        );
+
+        mediaDetails.setType(MediaDetails.Type.TV);
+        mediaDetails.setSource(MediaDetails.Source.TMDB);
+        mediaDetails.setReleaseYear(extractYear(response.getFirstAirDate()));
+        mediaDetails.setEndYear(extractYear(response.getLastAirDate()));
+        mediaDetails.setScore(response.getVoteAverage());
+        mediaDetails.setDescription(response.getOverview());
+        mediaDetails.setDuration(response.getEpisodeRunTime());
+        mediaDetails.setTotalEpisodes(response.getNumberEpisodes());
+        mediaDetails.setStatus(response.getStatus());
+
+        List<MediaDetails.Season> seasons = response.getSeasons()
+                .stream()
+                .map(this::mapToSingleSeason)
+                .collect(Collectors.toList());
+
+        mediaDetails.setSeasons(seasons);
+
+        return mediaDetails;
+    }
+
+    private MediaDetails.Season mapToSingleSeason(TmdbTvSeriesDetailsResponse.Season tmdbSeason) {
+
+        MediaDetails.Season season = new MediaDetails.Season();
+
+        season.setId(tmdbSeason.getId());
+        season.setTotalEpisodes(tmdbSeason.getEpisodeCount());
+        season.setImageUrl(tmdbSeason.getPosterPath()!= null
+                ? IMAGE_BASE + tmdbSeason.getPosterPath()
+                : null
+        );
+
+        season.setReleaseYear(extractYear(tmdbSeason.getAirDate()));
+        season.setTitle(tmdbSeason.getName());
+        season.setDescription(tmdbSeason.getOverview());
+        season.setScore(tmdbSeason.getVoteAverage());
+        season.setSeasonNumber(tmdbSeason.getSeasonNumber());
+
+        return season;
     }
 
     private boolean isValidMedia(TmdbSearchResponse.TmdbResult result) {
@@ -66,10 +157,7 @@ public class TmdbMapper {
         };
     }
 
-    private Integer extractYear(TmdbSearchResponse.TmdbResult result) {
-        String date = result.getReleaseDate() != null
-                ? result.getReleaseDate()
-                : result.getFirstAirDate();
+    private Integer extractYear(String date) {
 
         if (date == null || date.isEmpty()) {
             return null;

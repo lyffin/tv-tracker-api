@@ -1,6 +1,7 @@
 package com.lbranco.tv_tracker_api.provider.tmdb;
 
 import com.lbranco.tv_tracker_api.model.Media;
+import com.lbranco.tv_tracker_api.model.MediaDetails;
 import com.lbranco.tv_tracker_api.provider.tmdb.mapper.TmdbMapper;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,18 @@ public class TmdbService {
     public List<Media> searchTv(String query) {
         return tmdbMapper.mapToMedia(
                 tmdbClient.searchTv(query)
+        );
+    }
+
+    public MediaDetails movieDetails(int id) {
+        return tmdbMapper.mapMovieDetailsToMediaDetails(
+                tmdbClient.movieDetails(id)
+        );
+    }
+
+    public MediaDetails tvSeriesDetails(int id) {
+        return tmdbMapper.mapTvSeriesToMediaDetails(
+                tmdbClient.tvSeriesDetails(id)
         );
     }
 }
