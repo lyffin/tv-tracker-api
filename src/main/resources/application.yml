@@ -1,2 +1,2 @@
 tmdb:
-  token: TMDB_TOKEN
+  token: ${TMDB_TOKEN:}

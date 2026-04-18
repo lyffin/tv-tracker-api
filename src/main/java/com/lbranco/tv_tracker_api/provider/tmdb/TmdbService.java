@@ -36,19 +36,19 @@ public class TmdbService {
         );
     }
 
-    public MediaDetails movieDetails(int id) {
+    public MediaDetails getMovieDetails(int id) {
         return tmdbMapper.mapMovieDetailsToMediaDetails(
                 tmdbClient.movieDetails(id)
         );
     }
 
-    public MediaDetails tvSeriesDetails(int id) {
+    public MediaDetails getTvSeriesDetails(int id) {
         return tmdbMapper.mapTvSeriesToMediaDetails(
                 tmdbClient.tvSeriesDetails(id)
         );
     }
 
-    public SeasonDetails tvSeasonDetails(int seriesId, int seasonNum) {
+    public SeasonDetails getTvSeasonDetails(int seriesId, int seasonNum) {
         return tmdbMapper.mapTvSeasonToSeasonDetails(
                 tmdbClient.tvSeasonDetails(seriesId, seasonNum)
         );

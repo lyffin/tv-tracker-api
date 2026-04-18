@@ -4,6 +4,7 @@ import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbMovieDetailsResponse;
 import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbSearchResponse;
 import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbTvSeasonDetailsResponse;
 import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbTvSeriesDetailsResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -13,15 +14,16 @@ public class TmdbClient {
     private final WebClient webClient;
     private final String token;
 
-    public TmdbClient(WebClient.Builder builder) {
+    public TmdbClient(WebClient.Builder builder,
+                      @Value("${tmdb.token:}") String token) {
         this.webClient = builder
                 .baseUrl("https://api.themoviedb.org/3")
                 .build();
-
-        this.token = System.getenv("TMDB_TOKEN");
+        this.token = token;
     }
 
     public TmdbSearchResponse searchMulti(String query) {
+        validateToken();
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/search/multi")
@@ -37,6 +39,7 @@ public class TmdbClient {
     }
 
     public TmdbSearchResponse searchMovie(String query) {
+        validateToken();
         return webClient.get()
                         .uri(uriBuilder -> uriBuilder
                                 .path("/search/movie")
@@ -52,6 +55,7 @@ public class TmdbClient {
     }
 
     public TmdbSearchResponse searchTv(String query) {
+        validateToken();
         return webClient.get()
                         .uri(uriBuilder -> uriBuilder
                                 .path("/search/tv")
@@ -67,6 +71,7 @@ public class TmdbClient {
     }
 
     public TmdbMovieDetailsResponse movieDetails(int id) {
+        validateToken();
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/movie/{id}")
@@ -80,6 +85,7 @@ public class TmdbClient {
     }
 
     public TmdbTvSeriesDetailsResponse tvSeriesDetails(int id) {
+        validateToken();
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/tv/{id}")
@@ -93,6 +99,7 @@ public class TmdbClient {
     }
 
     public TmdbTvSeasonDetailsResponse tvSeasonDetails(int seriesId, int seasonNum) {
+        validateToken();
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/tv/{series_id}/season/{season_number}")
@@ -103,5 +110,11 @@ public class TmdbClient {
                 .retrieve()
                 .bodyToMono(TmdbTvSeasonDetailsResponse.class)
                 .block();
+    }
+
+    private void validateToken() {
+        if (token == null || token.isBlank()) {
+            throw new IllegalStateException("TMDB token is missing. Set TMDB_TOKEN before calling TMDB endpoints.");
+        }
     }
 }

@@ -20,7 +20,7 @@ public class SeasonDetailsService {
 
     public SeasonDetails seasonDetails(int seriesId, int seasonNum) {
 
-        return safeCall(seriesId, seasonNum, () -> tmdbService.tvSeasonDetails(seriesId, seasonNum));
+        return safeCall(seriesId, seasonNum, () -> tmdbService.getTvSeasonDetails(seriesId, seasonNum));
     }
 
     private SeasonDetails safeCall(int seriesId, int seasonNum,

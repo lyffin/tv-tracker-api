@@ -6,7 +6,6 @@ import com.lbranco.tv_tracker_api.media.service.SeasonDetailsService;
 import com.lbranco.tv_tracker_api.model.Media;
 import com.lbranco.tv_tracker_api.model.MediaDetails;
 import com.lbranco.tv_tracker_api.model.SeasonDetails;
-import com.lbranco.tv_tracker_api.provider.anilist.AniListService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

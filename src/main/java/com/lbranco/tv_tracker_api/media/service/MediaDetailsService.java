@@ -21,8 +21,8 @@ public class MediaDetailsService {
     public MediaDetails details(MediaDetails.Type type, int id) {
 
         return switch (type) {
-            case MOVIE -> safeCall("TMDB-MOVIE", id, () -> tmdbService.movieDetails(id));
-            case TV -> safeCall("TMDB-TV", id, () -> tmdbService.tvSeriesDetails(id));
+            case MOVIE -> safeCall("TMDB-MOVIE", id, () -> tmdbService.getMovieDetails(id));
+            case TV -> safeCall("TMDB-TV", id, () -> tmdbService.getTvSeriesDetails(id));
             case ANIME -> throw new UnsupportedOperationException("Anime not implemented yet");
         };
     }

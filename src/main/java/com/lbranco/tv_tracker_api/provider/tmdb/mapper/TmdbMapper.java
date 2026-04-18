@@ -10,6 +10,7 @@ import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbTvSeasonDetailsResponse;
 import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbTvSeriesDetailsResponse;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,10 @@ public class TmdbMapper {
     private static final String IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
 
     public List<Media> mapToMedia(TmdbSearchResponse response) {
+        if (response == null || response.getResults() == null) {
+            return List.of();
+        }
+
         return response.getResults()
                 .stream()
                 .filter(this::isValidMedia)
@@ -78,7 +83,7 @@ public class TmdbMapper {
         mediaDetails.setReleaseYear(extractYear(response.getReleaseDate()));
         mediaDetails.setDuration(response.getRuntime());
         mediaDetails.setStatus(response.getStatus());
-        mediaDetails.setScore(response.getVoteAverage());
+        mediaDetails.setScore(normalizeScore(response.getVoteAverage()));
         mediaDetails.setType(MediaDetails.Type.MOVIE);
         mediaDetails.setSource(MediaDetails.Source.TMDB);
 
@@ -108,13 +113,13 @@ public class TmdbMapper {
         mediaDetails.setSource(MediaDetails.Source.TMDB);
         mediaDetails.setReleaseYear(extractYear(response.getFirstAirDate()));
         mediaDetails.setEndYear(extractYear(response.getLastAirDate()));
-        mediaDetails.setScore(response.getVoteAverage());
+        mediaDetails.setScore(normalizeScore(response.getVoteAverage()));
         mediaDetails.setDescription(response.getOverview());
-        mediaDetails.setDuration(response.getEpisodeRunTime().getFirst());
+        mediaDetails.setDuration(firstOrNull(response.getEpisodeRunTime()));
         mediaDetails.setTotalEpisodes(response.getNumberEpisodes());
         mediaDetails.setStatus(response.getStatus());
 
-        List<MediaDetails.Season> seasons = response.getSeasons()
+        List<MediaDetails.Season> seasons = safeList(response.getSeasons())
                 .stream()
                 .map(this::mapToSingleSeason)
                 .collect(Collectors.toList());
@@ -138,7 +143,7 @@ public class TmdbMapper {
         season.setReleaseYear(extractYear(tmdbSeason.getAirDate()));
         season.setTitle(tmdbSeason.getName());
         season.setDescription(tmdbSeason.getOverview());
-        season.setScore(tmdbSeason.getVoteAverage());
+        season.setScore(normalizeScore(tmdbSeason.getVoteAverage()));
         season.setSeasonNumber(tmdbSeason.getSeasonNumber());
 
         return season;
@@ -149,15 +154,15 @@ public class TmdbMapper {
         SeasonDetails seasonDetails = new SeasonDetails();
 
         seasonDetails.setId(response.getId());
-        seasonDetails.setTotalEpisodes(response.getEpisodes().size());
-        seasonDetails.setImageUrl(IMAGE_BASE + response.getPosterPath());
+        seasonDetails.setTotalEpisodes(safeList(response.getEpisodes()).size());
+        seasonDetails.setImageUrl(buildImageUrl(response.getPosterPath()));
         seasonDetails.setReleaseYear(extractYear(response.getAirDate()));
         seasonDetails.setTitle(response.getName());
         seasonDetails.setDescription(response.getOverview());
-        seasonDetails.setScore(response.getVoteAverage());
+        seasonDetails.setScore(normalizeScore(response.getVoteAverage()));
         seasonDetails.setSeasonNumber(response.getSeasonNumber());
 
-        List<SeasonDetails.Episode> episodes = response.getEpisodes()
+        List<SeasonDetails.Episode> episodes = safeList(response.getEpisodes())
                 .stream()
                 .map(this::mapToSingleEpisode)
                 .collect(Collectors.toList());
@@ -174,8 +179,8 @@ public class TmdbMapper {
         episode.setId(tmdbEpisode.getId());
         episode.setEpisodeNumber(tmdbEpisode.getEpisodeNumber());
         episode.setTitle(tmdbEpisode.getName());
-        episode.setImageUrl(IMAGE_BASE + tmdbEpisode.getStillPath());
-        episode.setScore(tmdbEpisode.getVoteAverage());
+        episode.setImageUrl(buildImageUrl(tmdbEpisode.getStillPath()));
+        episode.setScore(normalizeScore(tmdbEpisode.getVoteAverage()));
         episode.setDescription(tmdbEpisode.getOverview());
         episode.setReleaseDate(tmdbEpisode.getAirDate());
         episode.setDuration(tmdbEpisode.getRuntime());
@@ -209,5 +214,21 @@ public class TmdbMapper {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private String buildImageUrl(String path) {
+        return path == null || path.isBlank() ? null : IMAGE_BASE + path;
+    }
+
+    private Float normalizeScore(Float score) {
+        return score == null ? null : score * 10;
+    }
+
+    private Integer firstOrNull(List<Integer> values) {
+        return (values == null || values.isEmpty()) ? null : values.getFirst();
+    }
+
+    private <T> List<T> safeList(List<T> values) {
+        return values == null ? Collections.emptyList() : values;
     }
 }
