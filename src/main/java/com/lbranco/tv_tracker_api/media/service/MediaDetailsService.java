@@ -1,14 +1,11 @@
 package com.lbranco.tv_tracker_api.media.service;
 
-import com.lbranco.tv_tracker_api.model.Media;
 import com.lbranco.tv_tracker_api.model.MediaDetails;
 import com.lbranco.tv_tracker_api.provider.tmdb.TmdbService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Supplier;
 
 @Service

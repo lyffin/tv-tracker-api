@@ -2,6 +2,7 @@ package com.lbranco.tv_tracker_api.provider.tmdb;
 
 import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbMovieDetailsResponse;
 import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbSearchResponse;
+import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbTvSeasonDetailsResponse;
 import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbTvSeriesDetailsResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -88,6 +89,19 @@ public class TmdbClient {
                 .header("accept", "application/json")
                 .retrieve()
                 .bodyToMono(TmdbTvSeriesDetailsResponse.class)
+                .block();
+    }
+
+    public TmdbTvSeasonDetailsResponse tvSeasonDetails(int seriesId, int seasonNum) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/tv/{series_id}/season/{season_number}")
+                        .queryParam("language", "en-US")
+                        .build(seriesId, seasonNum))
+                .header("Authorization", "Bearer " + token)
+                .header("accept", "application/json")
+                .retrieve()
+                .bodyToMono(TmdbTvSeasonDetailsResponse.class)
                 .block();
     }
 }

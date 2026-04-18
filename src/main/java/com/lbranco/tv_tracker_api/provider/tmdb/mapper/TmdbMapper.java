@@ -2,9 +2,11 @@ package com.lbranco.tv_tracker_api.provider.tmdb.mapper;
 
 import com.lbranco.tv_tracker_api.model.Media;
 import com.lbranco.tv_tracker_api.model.MediaDetails;
+import com.lbranco.tv_tracker_api.model.SeasonDetails;
 import com.lbranco.tv_tracker_api.model.Title;
 import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbMovieDetailsResponse;
 import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbSearchResponse;
+import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbTvSeasonDetailsResponse;
 import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbTvSeriesDetailsResponse;
 import org.springframework.stereotype.Component;
 
@@ -140,6 +142,45 @@ public class TmdbMapper {
         season.setSeasonNumber(tmdbSeason.getSeasonNumber());
 
         return season;
+    }
+
+    public SeasonDetails mapTvSeasonToSeasonDetails(TmdbTvSeasonDetailsResponse response) {
+
+        SeasonDetails seasonDetails = new SeasonDetails();
+
+        seasonDetails.setId(response.getId());
+        seasonDetails.setTotalEpisodes(response.getEpisodes().size());
+        seasonDetails.setImageUrl(IMAGE_BASE + response.getPosterPath());
+        seasonDetails.setReleaseYear(extractYear(response.getAirDate()));
+        seasonDetails.setTitle(response.getName());
+        seasonDetails.setDescription(response.getOverview());
+        seasonDetails.setScore(response.getVoteAverage());
+        seasonDetails.setSeasonNumber(response.getSeasonNumber());
+
+        List<SeasonDetails.Episode> episodes = response.getEpisodes()
+                .stream()
+                .map(this::mapToSingleEpisode)
+                .collect(Collectors.toList());
+
+        seasonDetails.setEpisodes(episodes);
+
+        return seasonDetails;
+    }
+
+    private SeasonDetails.Episode mapToSingleEpisode(TmdbTvSeasonDetailsResponse.Episode tmdbEpisode) {
+
+        SeasonDetails.Episode episode = new SeasonDetails.Episode();
+
+        episode.setId(tmdbEpisode.getId());
+        episode.setEpisodeNumber(tmdbEpisode.getEpisodeNumber());
+        episode.setTitle(tmdbEpisode.getName());
+        episode.setImageUrl(IMAGE_BASE + tmdbEpisode.getStillPath());
+        episode.setScore(tmdbEpisode.getVoteAverage());
+        episode.setDescription(tmdbEpisode.getOverview());
+        episode.setReleaseDate(tmdbEpisode.getAirDate());
+        episode.setDuration(tmdbEpisode.getRuntime());
+
+        return episode;
     }
 
     private boolean isValidMedia(TmdbSearchResponse.TmdbResult result) {
