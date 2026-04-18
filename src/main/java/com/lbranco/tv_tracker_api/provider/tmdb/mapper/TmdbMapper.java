@@ -108,7 +108,7 @@ public class TmdbMapper {
         mediaDetails.setEndYear(extractYear(response.getLastAirDate()));
         mediaDetails.setScore(response.getVoteAverage());
         mediaDetails.setDescription(response.getOverview());
-        mediaDetails.setDuration(response.getEpisodeRunTime());
+        mediaDetails.setDuration(response.getEpisodeRunTime().getFirst());
         mediaDetails.setTotalEpisodes(response.getNumberEpisodes());
         mediaDetails.setStatus(response.getStatus());
 

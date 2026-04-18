@@ -31,11 +31,12 @@ public class MediaController {
         return mediaSearchService.search(query, type);
     }
 
-    @GetMapping("/{provider}/{id}")
+    @GetMapping("/{type}/{id}")
     public MediaDetails details(
-            @PathVariable String provider,
+            @PathVariable String type,
             @PathVariable int id
     ) {
-        return mediaDetailsService.details(provider, id);
+        return mediaDetailsService.details(
+                MediaDetails.Type.valueOf(type.toUpperCase()), id);
     }
 }

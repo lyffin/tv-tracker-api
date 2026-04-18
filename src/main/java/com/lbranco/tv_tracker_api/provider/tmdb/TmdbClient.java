@@ -68,10 +68,9 @@ public class TmdbClient {
     public TmdbMovieDetailsResponse movieDetails(int id) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/movie")
-                        .queryParam("movie_id", id)
+                        .path("/movie/{id}")
                         .queryParam("language", "en-US")
-                        .build())
+                        .build(id))
                 .header("Authorization", "Bearer " + token)
                 .header("accept", "application/json")
                 .retrieve()
@@ -82,10 +81,9 @@ public class TmdbClient {
     public TmdbTvSeriesDetailsResponse tvSeriesDetails(int id) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/tv")
-                        .queryParam("series_id", id)
+                        .path("/tv/{id}")
                         .queryParam("language", "en-US")
-                        .build())
+                        .build(id))
                 .header("Authorization", "Bearer " + token)
                 .header("accept", "application/json")
                 .retrieve()

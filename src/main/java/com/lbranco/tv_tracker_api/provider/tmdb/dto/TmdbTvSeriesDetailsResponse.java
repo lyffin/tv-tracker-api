@@ -23,7 +23,7 @@ public class TmdbTvSeriesDetailsResponse {
     private String firstAirDate;
 
     @JsonProperty("episode_run_time")
-    private Integer EpisodeRunTime;
+    private List<Integer> episodeRunTime;
 
     @JsonProperty("in_production")
     private Boolean inProduction;
