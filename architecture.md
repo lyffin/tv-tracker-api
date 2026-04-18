@@ -145,8 +145,8 @@ when the narrower name improves readability inside provider modules.
 
 A few model decisions will pay off quickly:
 
-- move `model` under `media.model` so it belongs to the feature that uses it
-- extract duplicated enums such as `Type`, `Source`, and `MediaFormat` into shared enums once the API stabilizes
+- keep app-facing models under `media.model` so they stay close to the media feature
+- keep shared enums such as `MediaType`, `MediaSource`, and `MediaFormat` in `shared.enums`
 - keep ID strategy consistent, for example provider-prefixed IDs such as `tmdb:123`
 - keep score semantics consistent across providers, ideally one scale everywhere
 
@@ -194,11 +194,9 @@ Keeping config in properties makes testing and deployment easier.
 
 These are the highest-value improvements from here:
 
-1. Move `model` to `media.model`.
-2. Extract shared enums used by both `Media` and `MediaDetails`.
-3. Add `@ControllerAdvice` for consistent API errors.
-4. Add tests around mapper behavior and service fallbacks.
-5. Replace provider-specific branching in services with a provider strategy if the number of providers grows.
+1. Add tests around mapper behavior and service fallbacks.
+2. Replace provider-specific branching in services with a provider strategy if the number of providers grows.
+3. Add request/response DTOs for your own API if the public contract starts diverging from internal domain objects.
 
 ## Rule of Thumb
 

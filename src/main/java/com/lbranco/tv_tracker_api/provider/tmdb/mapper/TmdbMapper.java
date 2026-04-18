@@ -1,9 +1,11 @@
 package com.lbranco.tv_tracker_api.provider.tmdb.mapper;
 
-import com.lbranco.tv_tracker_api.model.Media;
-import com.lbranco.tv_tracker_api.model.MediaDetails;
-import com.lbranco.tv_tracker_api.model.SeasonDetails;
-import com.lbranco.tv_tracker_api.model.Title;
+import com.lbranco.tv_tracker_api.media.model.Media;
+import com.lbranco.tv_tracker_api.media.model.MediaDetails;
+import com.lbranco.tv_tracker_api.media.model.SeasonDetails;
+import com.lbranco.tv_tracker_api.media.model.Title;
+import com.lbranco.tv_tracker_api.shared.enums.MediaSource;
+import com.lbranco.tv_tracker_api.shared.enums.MediaType;
 import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbMovieDetailsResponse;
 import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbSearchResponse;
 import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbTvSeasonDetailsResponse;
@@ -50,7 +52,7 @@ public class TmdbMapper {
                         : null
         );
         media.setType(mapType(tmdbResult.getMediaType()));
-        media.setSource(Media.Source.TMDB);
+        media.setSource(MediaSource.TMDB);
         media.setReleaseYear(extractYear(tmdbResult.getReleaseDate() != null ? tmdbResult.getReleaseDate() : tmdbResult.getFirstAirDate()));
         media.setScore(
                 tmdbResult.getVoteAverage() != null
@@ -84,8 +86,8 @@ public class TmdbMapper {
         mediaDetails.setDuration(response.getRuntime());
         mediaDetails.setStatus(response.getStatus());
         mediaDetails.setScore(normalizeScore(response.getVoteAverage()));
-        mediaDetails.setType(MediaDetails.Type.MOVIE);
-        mediaDetails.setSource(MediaDetails.Source.TMDB);
+        mediaDetails.setType(MediaType.MOVIE);
+        mediaDetails.setSource(MediaSource.TMDB);
 
         return mediaDetails;
     }
@@ -109,8 +111,8 @@ public class TmdbMapper {
                         : null
         );
 
-        mediaDetails.setType(MediaDetails.Type.TV);
-        mediaDetails.setSource(MediaDetails.Source.TMDB);
+        mediaDetails.setType(MediaType.TV);
+        mediaDetails.setSource(MediaSource.TMDB);
         mediaDetails.setReleaseYear(extractYear(response.getFirstAirDate()));
         mediaDetails.setEndYear(extractYear(response.getLastAirDate()));
         mediaDetails.setScore(normalizeScore(response.getVoteAverage()));
@@ -193,12 +195,12 @@ public class TmdbMapper {
         return "movie".equalsIgnoreCase(type) || "tv".equalsIgnoreCase(type);
     }
 
-    private Media.Type mapType(String mediaType) {
+    private MediaType mapType(String mediaType) {
         if (mediaType == null) return null;
 
         return switch (mediaType.toLowerCase()) {
-            case "movie" -> Media.Type.MOVIE;
-            case "tv" -> Media.Type.TV;
+            case "movie" -> MediaType.MOVIE;
+            case "tv" -> MediaType.TV;
             default -> null;
         };
     }

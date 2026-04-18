@@ -1,6 +1,6 @@
 package com.lbranco.tv_tracker_api.provider.anilist;
 
-import com.lbranco.tv_tracker_api.model.Media;
+import com.lbranco.tv_tracker_api.media.model.Media;
 import com.lbranco.tv_tracker_api.provider.anilist.mapper.AniListMapper;
 import org.springframework.stereotype.Service;
 

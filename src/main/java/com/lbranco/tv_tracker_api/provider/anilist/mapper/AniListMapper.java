@@ -1,7 +1,10 @@
 package com.lbranco.tv_tracker_api.provider.anilist.mapper;
 
-import com.lbranco.tv_tracker_api.model.Media;
-import com.lbranco.tv_tracker_api.model.Title;
+import com.lbranco.tv_tracker_api.media.model.Media;
+import com.lbranco.tv_tracker_api.media.model.Title;
+import com.lbranco.tv_tracker_api.shared.enums.MediaFormat;
+import com.lbranco.tv_tracker_api.shared.enums.MediaSource;
+import com.lbranco.tv_tracker_api.shared.enums.MediaType;
 import com.lbranco.tv_tracker_api.provider.anilist.dto.AniListMediaResponse;
 import org.springframework.stereotype.Component;
 
@@ -34,8 +37,8 @@ public class AniListMapper {
         media.setImageUrl(
                 aniMedia.getCoverImage() != null ? aniMedia.getCoverImage().getLarge() : null
         );
-        media.setType(Media.Type.ANIME);
-        media.setSource(Media.Source.ANILIST);
+        media.setType(MediaType.ANIME);
+        media.setSource(MediaSource.ANILIST);
         media.setReleaseYear(
                 aniMedia.getStartDate() != null ? aniMedia.getStartDate().getYear() : null
         );
@@ -48,13 +51,13 @@ public class AniListMapper {
         if (aniMedia.getMediaFormat() != null) {
             try {
                 media.setMediaFormat(
-                        Media.MediaFormat.valueOf(aniMedia.getMediaFormat().name())
+                        MediaFormat.valueOf(aniMedia.getMediaFormat().name())
                 );
             } catch (IllegalArgumentException e) {
-                media.setMediaFormat(Media.MediaFormat.UNKNOWN);
+                media.setMediaFormat(MediaFormat.UNKNOWN);
             }
         } else {
-            media.setMediaFormat(Media.MediaFormat.UNKNOWN);
+            media.setMediaFormat(MediaFormat.UNKNOWN);
         }
 
         return media;

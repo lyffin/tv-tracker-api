@@ -30,13 +30,16 @@ src/main/java/com/lbranco/tv_tracker_api
 +-- media
 |   +-- controller
 |   +-- service
-+-- model
+|   +-- model
 +-- provider
 |   +-- anilist
 |   +-- tmdb
++-- shared
+|   +-- enums
+|   +-- exception
 ```
 
-The current code is already close to a feature-first structure. See [architecture.md](/architecture.md) for the recommended next iteration.
+The current code follows this feature-first structure now. See [architecture.md](/architecture.md) for the design rules behind it.
 
 ## Running Locally
 
@@ -114,10 +117,10 @@ GET /media/tv/1399/season/1
 
 ## Current Improvement Priorities
 
-- Move shared domain models under `media`
-- Extract duplicated enums into shared types
-- Add controller-level exception handling
 - Add mapper and service tests
+- Add API-level request/response DTOs if the public contract starts diverging from the internal model
+- Add more explicit provider exception types
+- Add controller-level tests for validation and error handling
 - Keep provider-specific DTOs and names out of the public model
 
 ## OpenAPI

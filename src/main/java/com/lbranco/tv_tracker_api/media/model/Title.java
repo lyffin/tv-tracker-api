@@ -1,4 +1,4 @@
-package com.lbranco.tv_tracker_api.model;
+package com.lbranco.tv_tracker_api.media.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

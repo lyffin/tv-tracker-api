@@ -1,11 +1,13 @@
 package com.lbranco.tv_tracker_api.media.controller;
 
+import com.lbranco.tv_tracker_api.shared.exception.InvalidMediaTypeException;
 import com.lbranco.tv_tracker_api.media.service.MediaDetailsService;
 import com.lbranco.tv_tracker_api.media.service.MediaSearchService;
 import com.lbranco.tv_tracker_api.media.service.SeasonDetailsService;
-import com.lbranco.tv_tracker_api.model.Media;
-import com.lbranco.tv_tracker_api.model.MediaDetails;
-import com.lbranco.tv_tracker_api.model.SeasonDetails;
+import com.lbranco.tv_tracker_api.media.model.Media;
+import com.lbranco.tv_tracker_api.media.model.MediaDetails;
+import com.lbranco.tv_tracker_api.media.model.SeasonDetails;
+import com.lbranco.tv_tracker_api.shared.enums.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +32,7 @@ public class MediaController {
     @GetMapping("/search")
     public List<Media> search(
             @RequestParam String query,
-            @RequestParam(required = false) Media.Type type
+            @RequestParam(required = false) MediaType type
     ) {
         return mediaSearchService.search(query, type);
     }
@@ -40,8 +42,7 @@ public class MediaController {
             @PathVariable String type,
             @PathVariable int id
     ) {
-        return mediaDetailsService.details(
-                MediaDetails.Type.valueOf(type.toUpperCase()), id);
+        return mediaDetailsService.details(parseMediaType(type), id);
     }
 
     @GetMapping("/tv/{seriesId}/season/{seasonNum}")
@@ -51,5 +52,13 @@ public class MediaController {
 
     ) {
         return seasonDetailsService.seasonDetails(seriesId, seasonNum);
+    }
+
+    private MediaType parseMediaType(String type) {
+        try {
+            return MediaType.valueOf(type.toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            throw new InvalidMediaTypeException(type);
+        }
     }
 }

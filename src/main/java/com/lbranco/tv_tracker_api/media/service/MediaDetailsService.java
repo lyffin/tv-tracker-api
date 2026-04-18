@@ -1,6 +1,7 @@
 package com.lbranco.tv_tracker_api.media.service;
 
-import com.lbranco.tv_tracker_api.model.MediaDetails;
+import com.lbranco.tv_tracker_api.media.model.MediaDetails;
+import com.lbranco.tv_tracker_api.shared.enums.MediaType;
 import com.lbranco.tv_tracker_api.provider.tmdb.TmdbService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,7 @@ public class MediaDetailsService {
         this.tmdbService = tmdbService;
     }
 
-    public MediaDetails details(MediaDetails.Type type, int id) {
+    public MediaDetails details(MediaType type, int id) {
 
         return switch (type) {
             case MOVIE -> safeCall("TMDB-MOVIE", id, () -> tmdbService.getMovieDetails(id));

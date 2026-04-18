@@ -1,8 +1,8 @@
 package com.lbranco.tv_tracker_api.provider.tmdb;
 
-import com.lbranco.tv_tracker_api.model.Media;
-import com.lbranco.tv_tracker_api.model.MediaDetails;
-import com.lbranco.tv_tracker_api.model.SeasonDetails;
+import com.lbranco.tv_tracker_api.media.model.Media;
+import com.lbranco.tv_tracker_api.media.model.MediaDetails;
+import com.lbranco.tv_tracker_api.media.model.SeasonDetails;
 import com.lbranco.tv_tracker_api.provider.tmdb.mapper.TmdbMapper;
 import org.springframework.stereotype.Service;
 

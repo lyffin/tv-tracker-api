@@ -1,6 +1,6 @@
 package com.lbranco.tv_tracker_api.media.service;
 
-import com.lbranco.tv_tracker_api.model.SeasonDetails;
+import com.lbranco.tv_tracker_api.media.model.SeasonDetails;
 import com.lbranco.tv_tracker_api.provider.tmdb.TmdbService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -42,7 +42,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MediaList'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Media'
         '400':
           description: Invalid request
           content:
@@ -63,18 +65,24 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /media/{id}:
+  /media/{type}/{id}:
     get:
       tags:
         - Media
       summary: Get media details
       parameters:
-        - name: id
+        - name: type
           in: path
           required: true
           schema:
             type: string
-            example: "tmdb:123"
+            enum: [movie, tv, anime]
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 123
       responses:
         '200':
           description: Media details
@@ -95,6 +103,48 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /media/tv/{seriesId}/season/{seasonNum}:
+    get:
+      tags:
+        - Media
+      summary: Get TV season details
+      parameters:
+        - name: seriesId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: seasonNum
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Season details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeasonDetails'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '500':
           description: Internal server error
           content:
@@ -136,16 +186,6 @@ components:
         mediaFormat:
           type: string
           enum: [TV, TV_SHORT, MOVIE, SPECIAL, OVA, ONA, MUSIC, MANGA, NOVEL, ONE_SHOT, UNKNOWN]
-
-    MediaList:
-      type: object
-      required:
-        - results
-      properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Media'
 
     MediaDetails:
       type: object
@@ -195,19 +235,14 @@ components:
         mediaFormat:
           type: string
           enum: [TV, TV_SHORT, MOVIE, SPECIAL, OVA, ONA, MUSIC, MANGA, NOVEL, ONE_SHOT, UNKNOWN]
+        status:
+          type: string
 
     Season:
       type: object
-      required:
-        - episodes
-        - totalEpisodes
-        - releaseYear
-        - title
       properties:
-        episodes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Episode'
+        id:
+          type: integer
         totalEpisodes:
           type: integer
         imageUrl:
@@ -222,16 +257,41 @@ components:
         score:
           type: number
           format: float
+        seasonNumber:
+          type: integer
+
+    SeasonDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+        totalEpisodes:
+          type: integer
+        imageUrl:
+          type: string
+        releaseYear:
+          type: integer
+          format: int32
+        title:
+          type: string
+        description:
+          type: string
+        score:
+          type: number
+          format: float
+        seasonNumber:
+          type: integer
+        episodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Episode'
 
     Episode:
       type: object
-      required:
-        - number
-        - title
-        - releaseDate
-        - duration
       properties:
-        number:
+        id:
+          type: integer
+        episodeNumber:
           type: integer
         title:
           type: string

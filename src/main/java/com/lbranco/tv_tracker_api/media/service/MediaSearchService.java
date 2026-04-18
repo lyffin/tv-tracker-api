@@ -1,6 +1,7 @@
 package com.lbranco.tv_tracker_api.media.service;
 
-import com.lbranco.tv_tracker_api.model.Media;
+import com.lbranco.tv_tracker_api.media.model.Media;
+import com.lbranco.tv_tracker_api.shared.enums.MediaType;
 import com.lbranco.tv_tracker_api.provider.anilist.AniListService;
 import com.lbranco.tv_tracker_api.provider.tmdb.TmdbService;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class MediaSearchService {
         this.tmdbService = tmdbService;
     }
 
-    public List<Media> search(String query, Media.Type type) {
+    public List<Media> search(String query, MediaType type) {
 
         if (type == null) {
             List<Media> results = new ArrayList<>();

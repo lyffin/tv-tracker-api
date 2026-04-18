@@ -1,8 +1,11 @@
-package com.lbranco.tv_tracker_api.model;
+package com.lbranco.tv_tracker_api.media.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.lbranco.tv_tracker_api.shared.enums.MediaFormat;
+import com.lbranco.tv_tracker_api.shared.enums.MediaSource;
+import com.lbranco.tv_tracker_api.shared.enums.MediaType;
 
 import java.util.List;
 
@@ -14,8 +17,8 @@ public class MediaDetails {
     private String id;
     private Title title;
     private String imageUrl;
-    private Type type;
-    private Source source;
+    private MediaType type;
+    private MediaSource source;
     private Integer releaseYear;
     private Integer endYear;
     private Float score;
@@ -39,17 +42,5 @@ public class MediaDetails {
         private String description;
         private Float score;
         private Integer seasonNumber;
-    }
-
-    public enum Type {
-        MOVIE, TV, ANIME
-    }
-
-    public enum Source {
-        TMDB, ANILIST
-    }
-
-    public enum MediaFormat {
-        TV, TV_SHORT, MOVIE, SPECIAL, OVA, ONA, MUSIC, MANGA, NOVEL, ONE_SHOT, UNKNOWN
     }
 }
