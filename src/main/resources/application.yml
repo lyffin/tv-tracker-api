@@ -1,2 +1,6 @@
 tmdb:
   token: ${TMDB_TOKEN:}
+
+trakt:
+  client-id: ${TRAKT_CLIENT_ID:}
+  client-secret: ${TRAKT_CLIENT_SECRET:}

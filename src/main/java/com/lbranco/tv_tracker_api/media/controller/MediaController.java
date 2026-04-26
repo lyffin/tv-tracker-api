@@ -1,5 +1,7 @@
 package com.lbranco.tv_tracker_api.media.controller;
 
+import com.lbranco.tv_tracker_api.provider.trakt.TraktService;
+import com.lbranco.tv_tracker_api.provider.trakt.dto.TraktWatchedShowsResponse;
 import com.lbranco.tv_tracker_api.shared.exception.InvalidMediaTypeException;
 import com.lbranco.tv_tracker_api.media.service.MediaDetailsService;
 import com.lbranco.tv_tracker_api.media.service.MediaSearchService;
@@ -19,14 +21,17 @@ public class MediaController {
     private final MediaSearchService mediaSearchService;
     private final MediaDetailsService mediaDetailsService;
     private final SeasonDetailsService seasonDetailsService;
+    private final TraktService traktService;
 
     public MediaController(MediaSearchService mediaSearchService,
                            MediaDetailsService mediaDetailsService,
-                           SeasonDetailsService seasonDetailsService) {
+                           SeasonDetailsService seasonDetailsService,
+                           TraktService traktService) {
 
         this.mediaSearchService = mediaSearchService;
         this.mediaDetailsService = mediaDetailsService;
         this.seasonDetailsService = seasonDetailsService;
+        this.traktService = traktService;
     }
 
     @GetMapping("/search")
@@ -60,5 +65,12 @@ public class MediaController {
         } catch (IllegalArgumentException exception) {
             throw new InvalidMediaTypeException(type);
         }
+    }
+
+    @GetMapping("/trakt/watched/shows")
+    public List<TraktWatchedShowsResponse> watchedShows(
+            @RequestParam String accessToken
+    ) {
+        return traktService.getWatchedShows(accessToken);
     }
 }
