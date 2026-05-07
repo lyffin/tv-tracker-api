@@ -24,7 +24,6 @@ public class MediaDetailsService {
         return switch (type) {
             case MOVIE -> safeCall("TMDB-MOVIE", id, () -> tmdbService.getMovieDetails(id));
             case TV -> safeCall("TMDB-TV", id, () -> tmdbService.getTvSeriesDetails(id));
-            case ANIME -> throw new UnsupportedOperationException("Anime not implemented yet");
         };
     }
 

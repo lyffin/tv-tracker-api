@@ -3,8 +3,6 @@ package com.lbranco.tv_tracker_api.media.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.lbranco.tv_tracker_api.shared.enums.MediaFormat;
-import com.lbranco.tv_tracker_api.shared.enums.MediaSource;
 import com.lbranco.tv_tracker_api.shared.enums.MediaType;
 
 import java.util.List;
@@ -18,7 +16,6 @@ public class MediaDetails {
     private Title title;
     private String imageUrl;
     private MediaType type;
-    private MediaSource source;
     private Integer releaseYear;
     private Integer endYear;
     private Float score;
@@ -26,7 +23,6 @@ public class MediaDetails {
     private Integer duration;
     private List<Season> seasons;
     private Integer totalEpisodes;
-    private MediaFormat mediaFormat;
     private String status;
 
     @Getter
