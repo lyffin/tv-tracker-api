@@ -6,17 +6,17 @@ import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbTvSeasonDetailsResponse;
 import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbTvSeriesDetailsResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestClient;
 
 @Component
 public class TmdbClient {
 
-    private final WebClient webClient;
+    private final RestClient restClient;
     private final String token;
 
-    public TmdbClient(WebClient.Builder builder,
+    public TmdbClient(RestClient.Builder builder,
                       @Value("${tmdb.token:}") String token) {
-        this.webClient = builder
+        this.restClient = builder
                 .baseUrl("https://api.themoviedb.org/3")
                 .build();
         this.token = token;
@@ -24,7 +24,7 @@ public class TmdbClient {
 
     public TmdbSearchResponse searchMulti(String query) {
         validateToken();
-        return webClient.get()
+        return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/search/multi")
                         .queryParam("query", query)
@@ -34,13 +34,12 @@ public class TmdbClient {
                 .header("Authorization", "Bearer " + token)
                 .header("accept", "application/json")
                 .retrieve()
-                .bodyToMono(TmdbSearchResponse.class)
-                .block();
+                .body(TmdbSearchResponse.class);
     }
 
     public TmdbSearchResponse searchMovie(String query) {
         validateToken();
-        return webClient.get()
+        return restClient.get()
                         .uri(uriBuilder -> uriBuilder
                                 .path("/search/movie")
                                 .queryParam("query", query)
@@ -50,13 +49,12 @@ public class TmdbClient {
                         .header("Authorization", "Bearer " + token)
                         .header("accept", "application/json")
                         .retrieve()
-                        .bodyToMono(TmdbSearchResponse.class)
-                        .block();
+                        .body(TmdbSearchResponse.class);
     }
 
     public TmdbSearchResponse searchTv(String query) {
         validateToken();
-        return webClient.get()
+        return restClient.get()
                         .uri(uriBuilder -> uriBuilder
                                 .path("/search/tv")
                                 .queryParam("query", query)
@@ -66,13 +64,12 @@ public class TmdbClient {
                         .header("Authorization", "Bearer " + token)
                         .header("accept", "application/json")
                         .retrieve()
-                        .bodyToMono(TmdbSearchResponse.class)
-                        .block();
+                        .body(TmdbSearchResponse.class);
     }
 
     public TmdbMovieDetailsResponse movieDetails(int id) {
         validateToken();
-        return webClient.get()
+        return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/movie/{id}")
                         .queryParam("language", "en-US")
@@ -80,13 +77,12 @@ public class TmdbClient {
                 .header("Authorization", "Bearer " + token)
                 .header("accept", "application/json")
                 .retrieve()
-                .bodyToMono(TmdbMovieDetailsResponse.class)
-                .block();
+                .body(TmdbMovieDetailsResponse.class);
     }
 
     public TmdbTvSeriesDetailsResponse tvSeriesDetails(int id) {
         validateToken();
-        return webClient.get()
+        return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/tv/{id}")
                         .queryParam("language", "en-US")
@@ -94,13 +90,12 @@ public class TmdbClient {
                 .header("Authorization", "Bearer " + token)
                 .header("accept", "application/json")
                 .retrieve()
-                .bodyToMono(TmdbTvSeriesDetailsResponse.class)
-                .block();
+                .body(TmdbTvSeriesDetailsResponse.class);
     }
 
     public TmdbTvSeasonDetailsResponse tvSeasonDetails(int seriesId, int seasonNum) {
         validateToken();
-        return webClient.get()
+        return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/tv/{series_id}/season/{season_number}")
                         .queryParam("language", "en-US")
@@ -108,8 +103,7 @@ public class TmdbClient {
                 .header("Authorization", "Bearer " + token)
                 .header("accept", "application/json")
                 .retrieve()
-                .bodyToMono(TmdbTvSeasonDetailsResponse.class)
-                .block();
+                .body(TmdbTvSeasonDetailsResponse.class);
     }
 
     private void validateToken() {
