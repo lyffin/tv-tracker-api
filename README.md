@@ -1,15 +1,13 @@
 # TV Tracker API
 
-Spring Boot API for searching and retrieving media data from external providers, with a provider-agnostic internal model that the frontend can consume consistently.
+Spring Boot API for searching and retrieving movie and TV data from TMDB, with an internal model that the frontend can consume consistently.
 
 ## What It Does
 
-- Search media across providers
+- Search movies and TV shows with TMDB
 - Fetch movie and TV details from TMDB
 - Fetch season details for TV series
-- Keep provider DTOs separate from the app's own response models
-
-AniList is currently used for anime search, but the project is already structured so that provider can be replaced later without rewriting the main media flow.
+- Keep TMDB DTOs separate from the app's own response models
 
 ## Stack
 
@@ -32,7 +30,6 @@ src/main/java/com/lbranco/tv_tracker_api
 |   +-- service
 |   +-- model
 +-- provider
-|   +-- anilist
 |   +-- tmdb
 +-- shared
 |   +-- enums
@@ -45,13 +42,11 @@ The current code follows this feature-first structure now. See [architecture.md]
 
 ### 1. Set environment variables
 
-TMDB is required for movie and TV endpoints:
+TMDB is required for search and media endpoints:
 
 ```powershell
 $env:TMDB_TOKEN="your_tmdb_bearer_token"
 ```
-
-If you later keep AniList locally, add its credentials the same way or move them into Spring configuration when needed.
 
 ### 2. Start the app
 
@@ -73,14 +68,12 @@ Or run tests:
 GET /media/search?query=naruto
 GET /media/search?query=dark&type=tv
 GET /media/search?query=inception&type=movie
-GET /media/search?query=one piece&type=anime
 ```
 
 `type` is optional. Supported values:
 
 - `movie`
 - `tv`
-- `anime`
 
 ### Media Details
 

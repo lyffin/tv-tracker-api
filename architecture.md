@@ -11,7 +11,7 @@ That means:
 - `media` owns the API use cases and internal response shapes
 - `provider` owns external API details only
 - `config` owns framework wiring
-- domain objects should represent your app, not TMDB or AniList
+- domain objects should represent your app, not TMDB
 
 This is a better fit than a global `controller/service/model` layout because the project is small and the main change driver is feature evolution, not team size.
 
@@ -43,11 +43,6 @@ com.lbranco.tv_tracker_api
 |   |   +-- TmdbService
 |   |   +-- dto
 |   |   +-- mapper
-|   +-- anilist
-|       +-- AniListClient
-|       +-- AniListService
-|       +-- dto
-|       +-- mapper
 |
 +-- shared
 |   +-- enums
@@ -65,14 +60,14 @@ Your controller and application services are already grouped under `media`, whic
 
 ### 2. Providers should behave like adapters
 
-`provider.tmdb` and `provider.anilist` should be treated as integration modules:
+`provider.tmdb` should be treated as an integration module:
 
 - clients talk HTTP/GraphQL
 - DTOs match provider payloads
 - mappers convert provider DTOs into internal models
 - provider services expose small, app-friendly operations
 
-The rest of the app should not know or care how TMDB or any future provider structures its payloads.
+The rest of the app should not know or care how TMDB structures its payloads.
 
 ### 3. Keep domain models provider-agnostic
 
@@ -130,8 +125,8 @@ Names to avoid as the project grows:
 
 Prefer:
 
-- `searchAnime`
 - `searchMovie`
+- `searchTv`
 - `getMovieDetails`
 
 Instead of vague names like:
@@ -146,9 +141,9 @@ when the narrower name improves readability inside provider modules.
 A few model decisions will pay off quickly:
 
 - keep app-facing models under `media.model` so they stay close to the media feature
-- keep shared enums such as `MediaType`, `MediaSource`, and `MediaFormat` in `shared.enums`
-- keep ID strategy consistent, for example provider-prefixed IDs such as `tmdb:123`
-- keep score semantics consistent across providers, ideally one scale everywhere
+- keep shared enums such as `MediaType` in `shared.enums`
+- keep ID strategy consistent across TMDB-backed endpoints
+- keep score semantics consistent everywhere
 
 ## What Should Stay Out of the Domain Layer
 
@@ -195,7 +190,7 @@ Keeping config in properties makes testing and deployment easier.
 These are the highest-value improvements from here:
 
 1. Add tests around mapper behavior and service fallbacks.
-2. Replace provider-specific branching in services with a provider strategy if the number of providers grows.
+2. Keep provider-specific branching small and isolated if more integrations are added later.
 3. Add request/response DTOs for your own API if the public contract starts diverging from internal domain objects.
 
 ## Rule of Thumb

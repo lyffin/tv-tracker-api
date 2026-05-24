@@ -7,6 +7,7 @@ import com.lbranco.tv_tracker_api.media.model.SeasonDetails;
 import com.lbranco.tv_tracker_api.media.service.MediaDetailsService;
 import com.lbranco.tv_tracker_api.media.service.MediaSearchService;
 import com.lbranco.tv_tracker_api.media.service.SeasonDetailsService;
+import com.lbranco.tv_tracker_api.provider.trakt.TraktService;
 import com.lbranco.tv_tracker_api.shared.enums.MediaType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +40,13 @@ class MediaControllerTest {
     @MockitoBean
     private SeasonDetailsService seasonDetailsService;
 
+    @MockitoBean
+    private TraktService traktService;
+
     @Test
     void searchBindsTypeAndReturnsResults() throws Exception {
         Media media = new Media();
-        media.setId("tmdb:1399");
+        media.setId(1399);
         media.setType(MediaType.TV);
 
         when(mediaSearchService.search("dark", MediaType.TV)).thenReturn(List.of(media));
@@ -51,7 +55,7 @@ class MediaControllerTest {
                         .param("query", "dark")
                         .param("type", "TV"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("tmdb:1399"))
+                .andExpect(jsonPath("$[0].id").value(1399))
                 .andExpect(jsonPath("$[0].type").value("TV"));
 
         verify(mediaSearchService).search("dark", MediaType.TV);
@@ -73,20 +77,20 @@ class MediaControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message")
-                        .value("Invalid media type: documentary. Supported values are movie, tv, anime."));
+                        .value("Invalid media type: documentary. Supported values are movie, tv."));
     }
 
     @Test
     void detailsUsesParsedMediaType() throws Exception {
         MediaDetails mediaDetails = new MediaDetails();
-        mediaDetails.setId("tmdb:550");
+        mediaDetails.setId(550);
         mediaDetails.setType(MediaType.MOVIE);
 
         when(mediaDetailsService.details(MediaType.MOVIE, 550)).thenReturn(mediaDetails);
 
         mockMvc.perform(get("/media/movie/550"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("tmdb:550"))
+                .andExpect(jsonPath("$.id").value(550))
                 .andExpect(jsonPath("$.type").value("MOVIE"));
 
         verify(mediaDetailsService).details(MediaType.MOVIE, 550);

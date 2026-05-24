@@ -7,7 +7,6 @@ import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbMovieDetailsResponse;
 import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbSearchResponse;
 import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbTvSeasonDetailsResponse;
 import com.lbranco.tv_tracker_api.provider.tmdb.dto.TmdbTvSeriesDetailsResponse;
-import com.lbranco.tv_tracker_api.shared.enums.MediaSource;
 import com.lbranco.tv_tracker_api.shared.enums.MediaType;
 import org.junit.jupiter.api.Test;
 
@@ -45,9 +44,8 @@ class TmdbMapperTest {
         List<Media> mediaList = tmdbMapper.mapToMedia(response);
 
         assertThat(mediaList).hasSize(1);
-        assertThat(mediaList.getFirst().getId()).isEqualTo("tmdb:10");
+        assertThat(mediaList.getFirst().getId()).isEqualTo(10);
         assertThat(mediaList.getFirst().getType()).isEqualTo(MediaType.MOVIE);
-        assertThat(mediaList.getFirst().getSource()).isEqualTo(MediaSource.TMDB);
         assertThat(mediaList.getFirst().getReleaseYear()).isEqualTo(2010);
         assertThat(mediaList.getFirst().getScore()).isEqualTo(88.0f);
         assertThat(mediaList.getFirst().getImageUrl()).isEqualTo("https://image.tmdb.org/t/p/w500/poster.jpg");
@@ -67,9 +65,8 @@ class TmdbMapperTest {
 
         MediaDetails mediaDetails = tmdbMapper.mapMovieDetailsToMediaDetails(response);
 
-        assertThat(mediaDetails.getId()).isEqualTo("tmdb:550");
+        assertThat(mediaDetails.getId()).isEqualTo(550);
         assertThat(mediaDetails.getType()).isEqualTo(MediaType.MOVIE);
-        assertThat(mediaDetails.getSource()).isEqualTo(MediaSource.TMDB);
         assertThat(mediaDetails.getReleaseYear()).isEqualTo(1999);
         assertThat(mediaDetails.getScore()).isEqualTo(84.0f);
         assertThat(mediaDetails.getImageUrl()).isEqualTo("https://image.tmdb.org/t/p/w500/fight-club.jpg");

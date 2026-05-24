@@ -2,7 +2,7 @@ openapi: 3.0.3
 
 info:
   title: TV Tracker API
-  description: API for tracking movies, TV shows, and anime from multiple providers
+  description: API for searching and retrieving movies and TV shows from TMDB
   version: 1.0.0
 
 servers:
@@ -23,7 +23,7 @@ paths:
     get:
       tags:
         - Media
-      summary: Search media across providers
+      summary: Search media
       parameters:
         - name: query
           in: query
@@ -35,7 +35,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [movie, tv, anime]
+            enum: [movie, tv]
       responses:
         '200':
           description: Successful search
@@ -76,7 +76,7 @@ paths:
           required: true
           schema:
             type: string
-            enum: [movie, tv, anime]
+            enum: [movie, tv]
         - name: id
           in: path
           required: true
@@ -162,30 +162,23 @@ components:
         - id
         - title
         - type
-        - source
       properties:
         id:
-          type: string
-          example: "anilist:15125"
+          type: integer
+          example: 550
         title:
           $ref: '#/components/schemas/Title'
         imageUrl:
           type: string
         type:
           type: string
-          enum: [movie, tv, anime]
-        source:
-          type: string
-          enum: [tmdb, anilist]
+          enum: [movie, tv]
         releaseYear:
           type: integer
           format: int32
         score:
           type: number
           format: float
-        mediaFormat:
-          type: string
-          enum: [TV, TV_SHORT, MOVIE, SPECIAL, OVA, ONA, MUSIC, MANGA, NOVEL, ONE_SHOT, UNKNOWN]
 
     MediaDetails:
       type: object
@@ -193,20 +186,16 @@ components:
         - id
         - title
         - type
-        - source
       properties:
         id:
-          type: string
+          type: integer
         title:
           $ref: '#/components/schemas/Title'
         imageUrl:
           type: string
         type:
           type: string
-          enum: [movie, tv, anime]
-        source:
-          type: string
-          enum: [tmdb, anilist]
+          enum: [movie, tv]
         releaseYear:
           type: integer
           format: int32
@@ -232,9 +221,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RelatedMedia'
-        mediaFormat:
-          type: string
-          enum: [TV, TV_SHORT, MOVIE, SPECIAL, OVA, ONA, MUSIC, MANGA, NOVEL, ONE_SHOT, UNKNOWN]
         status:
           type: string
 
